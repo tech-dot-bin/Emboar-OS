@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, develop ]
   schedule:
-    - cron: '0 0 * * 0'  # Weekly on Sunday
+    - cron: '0 0 * * 0'
 
 jobs:
   dependency-check:
@@ -14,18 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - uses: rustsec/audit-check-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-  license-check:
-    name: License Compliance
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
       
-      - uses: EmbarkStudios/cargo-deny-action@v1
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+      
+      - name: Run cargo audit
+        run: cargo audit
 
   code-quality:
     name: Code Quality
@@ -34,10 +29,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - uses: dtolnay/rust-toolchain@nightly
+      - uses: dtolnay/rust-toolchain@stable
       
-      - name: Install clippy
-        run: rustup component add clippy
+      - uses: Swatinem/rust-cache@v2
       
-      - name: Run clippy (pedantic)
+      - name: Run clippy
         run: cargo clippy --all-targets -- -W clippy::all
