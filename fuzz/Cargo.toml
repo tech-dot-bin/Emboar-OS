@@ -1,0 +1,21 @@
+[package]
+name = "emboar-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[dependencies]
+libfuzzer-sys = "0.4"
+emboar-crypto = { path = "../src/libs" }
+
+[[bin]]
+name = "fuzz_argon2"
+path = "fuzz_targets/fuzz_argon2.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_aes_gcm"
+path = "fuzz_targets/fuzz_aes_gcm.rs"
+test = false
+doc = false

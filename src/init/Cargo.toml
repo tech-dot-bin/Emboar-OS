@@ -1,0 +1,17 @@
+[package]
+name = "emboar-init"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+libc = "0.2"
+nix = { version = "0.27", features = ["process", "signal", "fs"] }
+anyhow = "1.0"
+log = "0.4"
+tracing = "0.1"
+
+[[bin]]
+name = "init"
+path = "src/main.rs"

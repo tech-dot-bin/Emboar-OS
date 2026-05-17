@@ -1,0 +1,17 @@
+[package]
+name = "emboar-kernel"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# Minimal dependencies for bare metal kernel
+# Most standard crates are commented out as they require std
+
+[features]
+default = []
+
+[[bin]]
+name = "kernel"
+path = "src/main.rs"

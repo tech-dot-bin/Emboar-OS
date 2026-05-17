@@ -1,0 +1,28 @@
+[package]
+name = "emboar-services"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+libc = "0.2"
+nix = { version = "0.27", features = ["fs", "process", "net"] }
+anyhow = "1.0"
+log = "0.4"
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = "0.4.44"
+
+[[bin]]
+name = "syslogd"
+path = "src/syslogd.rs"
+
+[[bin]]
+name = "auditd"
+path = "src/auditd.rs"
+
+[[bin]]
+name = "udevd"
+path = "src/udevd.rs"

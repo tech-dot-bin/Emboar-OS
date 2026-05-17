@@ -1,0 +1,17 @@
+# GDB initialization script
+file target/release/kernel.elf
+target remote :1234
+
+# Useful breakpoints
+break kernel_main
+break panic
+
+# Commands
+define reload-symbols
+    file target/release/kernel.elf
+end
+
+define continue-to-main
+    break kernel_main
+    continue
+end
