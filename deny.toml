@@ -1,0 +1,20 @@
+[licenses]
+unlicensed = "deny"
+allow = [
+    "Apache-2.0",
+    "MIT",
+    "GPL-3.0",
+    "ISC",
+    "OpenSSL",
+    "Zlib",
+]
+confidence-threshold = 0.8
+copyleft = "allow"
+
+[[licenses.clarify]]
+name = "ring"
+version = "*"
+expression = "ISC"
+license-files = [
+    { path = "LICENSE", hash = 0xbd0ced23 }
+]

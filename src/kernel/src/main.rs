@@ -430,7 +430,8 @@ pub extern "C" fn kernel_main() -> ! {
 /* =========================================================================
  * PANIC HANDLER
  * ======================================================================= */
-
+ 
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     // Use SerialPort::send_str directly instead of println! macro

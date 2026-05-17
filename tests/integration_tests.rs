@@ -7,7 +7,7 @@ mod tests {
     #[test]
     fn test_kernel_builds() {
         let output = Command::new("cargo")
-            .args(&["build", "--release", "--package", "emboar-kernel"])
+            .args(["build", "--release", "--package", "emboar-kernel"])
             .output()
             .expect("Failed to build kernel");
 
@@ -22,9 +22,9 @@ mod tests {
         
         for service in services {
             let output = Command::new("cargo")
-                .args(&["build", "--release", "--package", &format!("emboar-{}", service)])
+                .args(["build", "--release", "--package", "emboar-services", "--bin", service])
                 .output()
-                .expect(&format!("Failed to build {}", service));
+                .unwrap_or_else(|_| panic!("Failed to build {}", service));
 
             assert!(output.status.success(), 
                     "{} build failed: {}", 
@@ -36,7 +36,7 @@ mod tests {
     #[test]
     fn test_crypto_library() {
         let output = Command::new("cargo")
-            .args(&["test", "--package", "emboar-crypto", "--", "--nocapture"])
+            .args(["test", "--package", "emboar-libs", "--", "--nocapture"])
             .output()
             .expect("Failed to run crypto tests");
 
@@ -44,4 +44,6 @@ mod tests {
                 "Crypto tests failed: {}", 
                 String::from_utf8_lossy(&output.stderr));
     }
+
 }
+

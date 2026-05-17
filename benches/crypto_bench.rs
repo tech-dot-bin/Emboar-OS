@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use emboar_crypto::Crypto;
+use emboar_libs::crypto::Crypto;
 
 fn bench_sha512(c: &mut Criterion) {
     c.bench_function("sha512_1KB", |b| {

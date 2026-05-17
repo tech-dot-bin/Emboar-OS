@@ -38,11 +38,15 @@ ignore = []
 
 # Development dependencies for testing
 [dev-dependencies]
-criterion = "0.5"           # Benchmarking
+criterion = "0.8.2"           # Benchmarking
 proptest = "1.0"            # Property-based testing
 tempfile = "3.0"            # Temporary test files
 mockito = "1.2"             # HTTP mocking
-rand = "0.8"                # Random number generation
+rand = "0.10.1"                # Random number generation
+
+[dependencies]
+params = "0.8.0"
+rand = "0.10.1"
 
 # Profile optimizations
 [profile.release]

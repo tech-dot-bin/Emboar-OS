@@ -30,11 +30,10 @@ impl fmt::Display for EmboarError {
 
 impl std::error::Error for EmboarError {}
 
+pub type Result<T> = std::result::Result<T, EmboarError>;
+
 impl From<ring::error::Unspecified> for EmboarError {
     fn from(err: ring::error::Unspecified) -> Self {
         EmboarError::CryptoError(format!("Ring crypto error: {:?}", err))
     }
 }
-
-/// Result type for Emboar OS operations
-pub type Result<T> = std::result::Result<T, EmboarError>;

@@ -197,20 +197,24 @@ impl Crypto {
     /**
      * Derive key from password using Argon2id
      * 
-     * OWASP recommended parameters for password hashing
+     * Parameters m_cost, t_cost, and p_cost allow for parameter agility
      */
-    pub fn derive_key_argon2id(password: &[u8], salt: &[u8], key_len: usize) -> Result<Vec<u8>> {
+    pub fn derive_key_argon2id(
+        password: &[u8],
+        salt: &[u8],
+        key_len: usize,
+        m_cost: u32,
+        t_cost: u32,
+        p_cost: u32,
+    ) -> Result<Vec<u8>> {
         use argon2::{Argon2, PasswordHasher};
-        use argon2::password_hash::{Params, SaltString};
-        use base64::{engine::general_purpose, Engine as _};
+        use argon2::password_hash::SaltString;
 
         // Create salt string from bytes
         let salt_string = SaltString::encode_b64(salt)
             .map_err(|e| anyhow::anyhow!("Failed to create salt: {}", e))?;
 
-        // OWASP recommended Argon2id parameters (as of 2023)
-        // m=19456 KiB, t=2 iterations, p=1 parallelism
-        let params = Params::new(19456, 2, 1, Some(key_len))
+        let params = argon2::Params::new(m_cost, t_cost, p_cost, Some(key_len))
             .map_err(|e| anyhow::anyhow!("Invalid Argon2 params: {}", e))?;
 
         let argon2 = Argon2::new(
@@ -225,16 +229,11 @@ impl Crypto {
             .map_err(|e| anyhow::anyhow!("Argon2 hashing failed: {}", e))?;
 
         // Extract the hash bytes
-        let hash_str = password_hash
+        let output = password_hash
             .hash
-            .ok_or_else(|| anyhow::anyhow!("No hash generated"))?
-            .as_str();
-        
-        let hash_bytes = general_purpose::STANDARD
-            .decode(hash_str)
-            .map_err(|e| anyhow::anyhow!("Failed to decode hash: {}", e))?;
+            .ok_or_else(|| anyhow::anyhow!("No hash generated"))?;
 
-        // Return requested key length
+        let hash_bytes = output.as_bytes(); 
         Ok(hash_bytes[..key_len.min(hash_bytes.len())].to_vec())
     }
 }
@@ -337,11 +336,26 @@ mod tests {
         let plaintext = b"Secret";
         
         let mut encrypted = Crypto::aes256_gcm_encrypt(&key, plaintext).unwrap();
-        
-        // Tamper with ciphertext
-        encrypted ^= 0xFF;
+
+        if let Some(byte) = encrypted.get_mut(0) {
+            *byte ^= 0xFF;
+        }
         
         // Decryption should fail
         assert!(Crypto::aes256_gcm_decrypt(&key, &encrypted).is_err());
+    }
+
+    #[test]
+    fn test_encryption_algorithm_name() {
+        assert_eq!(EncryptionAlgorithm::AES256XTS.name(), "AES-256-XTS");
+        assert_eq!(EncryptionAlgorithm::AES256GCM.name(), "AES-256-GCM");
+        assert_eq!(EncryptionAlgorithm::ChaCha20Poly1305.name(), "ChaCha20-Poly1305");
+    }
+
+    #[test]
+    fn test_sha512_hashing() {
+        let data = b"test data";
+        let hash = digest(&SHA512, data);
+        assert_eq!(hash.as_ref().len(), 64); // SHA-512 produces 64-byte hashes
     }
 }
