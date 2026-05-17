@@ -21,8 +21,8 @@ debug = true
 [package]
 name = "emboar-os"
 version = "1.0.0"
-edition = "2026"
-authors = ["Softcore S.R.L."]
+edition = "2021"
+authors = ["Tech.Bin"]
 description = "A secure, modular operating system"
 repository = "https://github.com/emboar/emboar-os"
 license = "Apache-2.0"
